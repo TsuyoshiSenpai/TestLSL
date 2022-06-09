@@ -66,7 +66,7 @@ namespace LSLImportCurves
         public MainWindow()
         {
             InitializeComponent();
-            FindStream();
+            //FindStream();
         }
 
         /// <summary>
@@ -236,6 +236,11 @@ namespace LSLImportCurves
         }
 
         #endregion
+
+        private void ButtonSelectFolder_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 
     public interface ISaveToFile
