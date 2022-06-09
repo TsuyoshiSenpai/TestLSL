@@ -28,13 +28,20 @@ namespace LSLImportCurves
         private ComboBoxItem _selectedcbItem;
         private const int BufferLen = 2000;
         private List<DataPoint[]> _curves;
-        // hfg
         private List<Plot> _plots = new List<Plot>();
         private bool _run;
         private int _channelsCount;
         private liblsl.StreamInlet _inlet;
         private liblsl.StreamInfo[] _allStreams;
         private readonly DispatcherTimer _timer = new DispatcherTimer();
+        private bool saveEnabled;
+
+
+        public bool SaveEnabled
+        {
+            get { return saveEnabled; }
+            set { saveEnabled = value; OnPropertyChanged(); }
+        }
 
         public List<DataPoint[]> Curves
         {
@@ -67,7 +74,8 @@ namespace LSLImportCurves
         public MainWindow()
         {
             InitializeComponent();
-            //FindStream();
+            FindStream();
+            CheckIfSavingEnabled();
         }
 
         /// <summary>
@@ -241,6 +249,27 @@ namespace LSLImportCurves
         private void ButtonSelectFolder_OnClick(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        private void SaveBox_Checked(object sender, RoutedEventArgs e)
+        {
+            SaveEnabled = true;
+            CheckIfSavingEnabled();
+        }
+
+        private void SaveBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SaveEnabled = false;
+            CheckIfSavingEnabled();
+        }
+
+        private void CheckIfSavingEnabled()
+        {
+            if (SaveEnabled)
+            {
+                this.btSelectFolder.IsEnabled = true;
+            }
+            else this.btSelectFolder.IsEnabled = false;
         }
     }
 

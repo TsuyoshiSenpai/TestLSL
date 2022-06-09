@@ -19,7 +19,7 @@
                 <ComboBox Margin="10" MinWidth="150" ItemsSource="{Binding ElementName=Root, Path=CbItems}" SelectedItem="{Binding ElementName=Root, Path=SelectedcbItem}" x:Name="cbStream"></ComboBox>
                 <TextBlock Margin="10">Settings:</TextBlock>
                 <ComboBox Margin="10" Padding="5 0">
-                    <CheckBox x:Name="SaveBox">Save</CheckBox>
+                    <CheckBox x:Name="SaveBox" Checked="SaveBox_Checked" Unchecked="SaveBox_Unchecked">Save</CheckBox>
                     <Button x:Name="btSelectFolder" Click="ButtonSelectFolder_OnClick">Destination Folder</Button>
                 </ComboBox>
                 <Button Margin="10" Padding="5 0" Click="ButtonUpdate_OnClick">Update</Button>
