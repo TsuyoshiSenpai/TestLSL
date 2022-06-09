@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using OxyPlot;
@@ -26,6 +27,8 @@ namespace LSLImportCurves
     {
         private ObservableCollection<ComboBoxItem> _cbItems;
         private ComboBoxItem _selectedcbItem;
+        public FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+        public string PathToSelectedFolder;
         private const int BufferLen = 2000;
         private List<DataPoint[]> _curves;
         private List<Plot> _plots = new List<Plot>();
@@ -118,7 +121,7 @@ namespace LSLImportCurves
             {
                 CurvesGrid.RowDefinitions.Add(new RowDefinition());
 
-                var sp = new StackPanel() {Orientation = Orientation.Horizontal};
+                var sp = new StackPanel() {Orientation = (System.Windows.Controls.Orientation)System.Windows.Forms.Orientation.Horizontal};
                 var sp2 = new StackPanel() {VerticalAlignment = VerticalAlignment.Center};
                 var label = new TextBlock() {Text = channels[i].Element("label").Value};
                 var type = new TextBlock() {Text = channels[i].Element("type").Value};
@@ -143,7 +146,7 @@ namespace LSLImportCurves
                 plot.SetValue(Grid.RowProperty, i);
                 plot.SetValue(Grid.ColumnProperty, 1);
                 var ls = new LineSeries();
-                var myBinding = new Binding
+                var myBinding = new System.Windows.Data.Binding
                 {
                     ElementName = "Root",
                     Path = new PropertyPath("Curves[" + i + "]"),
@@ -248,7 +251,7 @@ namespace LSLImportCurves
 
         private void ButtonSelectFolder_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            folderBrowserDialog.ShowDialog();
         }
 
         private void SaveBox_Checked(object sender, RoutedEventArgs e)
