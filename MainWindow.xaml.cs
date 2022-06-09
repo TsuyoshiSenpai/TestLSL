@@ -28,6 +28,7 @@ namespace LSLImportCurves
         private ComboBoxItem _selectedcbItem;
         private const int BufferLen = 2000;
         private List<DataPoint[]> _curves;
+        // hfg
         private List<Plot> _plots = new List<Plot>();
         private bool _run;
         private int _channelsCount;
