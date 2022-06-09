@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LSLImportCurves", "LSLImportCurves.csproj", "{0FE202D2-366E-4198-967B-E030B1DFD6AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FE202D2-366E-4198-967B-E030B1DFD6AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE202D2-366E-4198-967B-E030B1DFD6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FE202D2-366E-4198-967B-E030B1DFD6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FE202D2-366E-4198-967B-E030B1DFD6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB4BF3AB-3A88-457D-B3F0-C06EC3DC6740}
+	EndGlobalSection
+EndGlobal
