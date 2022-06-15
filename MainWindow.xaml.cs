@@ -296,6 +296,12 @@ namespace LSLImportCurves
 
     public interface ISaveEEGStreamToFile
     {
+        /// <summary>
+        /// Сохраняет графики с ЭЭГ в текстовый файл
+        /// </summary>
+        /// <param name="streamNames">Названия потоков</param>
+        /// <param name="points">Список точек графика</param>
+        /// <param name="pathToDestinationFolder">Путь к папке, в которой будет сохранено</param>
         void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points, string pathToDestinationFolder);
     }
 }
