@@ -23,7 +23,7 @@ namespace LSLImportCurves
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged, ISaveToFile
+    public partial class MainWindow : Window, INotifyPropertyChanged, ISaveEEGStreamToFile
     {
         private ObservableCollection<ComboBoxItem> _cbItems;
         private ComboBoxItem _selectedcbItem;
@@ -38,7 +38,14 @@ namespace LSLImportCurves
         private liblsl.StreamInfo[] _allStreams;
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private bool saveEnabled;
+        private List<string> axisNames = new List<string>();
 
+
+        public List<string> AxisNames
+        {
+            get { return axisNames; }
+            set { axisNames = value; OnPropertyChanged(); }
+        }
 
         public bool SaveEnabled
         {
@@ -79,6 +86,10 @@ namespace LSLImportCurves
             InitializeComponent();
             FindStream();
             CheckIfSavingEnabled();
+            if (SaveEnabled)
+            {
+                SaveMultipleStreamsToTxt(AxisNames, Curves);
+            }
         }
 
         /// <summary>
@@ -124,6 +135,7 @@ namespace LSLImportCurves
                 var sp = new StackPanel() {Orientation = (System.Windows.Controls.Orientation)System.Windows.Forms.Orientation.Horizontal};
                 var sp2 = new StackPanel() {VerticalAlignment = VerticalAlignment.Center};
                 var label = new TextBlock() {Text = channels[i].Element("label").Value};
+                AxisNames.Add(label.ToString()); // заполняем массив с именами осей
                 var type = new TextBlock() {Text = channels[i].Element("type").Value};
                 sp2.Children.Add(label);
                 sp2.Children.Add(type);
@@ -252,6 +264,7 @@ namespace LSLImportCurves
         private void ButtonSelectFolder_OnClick(object sender, RoutedEventArgs e)
         {
             folderBrowserDialog.ShowDialog();
+            PathToSelectedFolder = folderBrowserDialog.SelectedPath;
         }
 
         private void SaveBox_Checked(object sender, RoutedEventArgs e)
@@ -274,10 +287,15 @@ namespace LSLImportCurves
             }
             else this.btSelectFolder.IsEnabled = false;
         }
+
+        public void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points)
+        {
+            
+        }
     }
 
-    public interface ISaveToFile
+    public interface ISaveEEGStreamToFile
     {
-        
+        void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points);
     }
 }
