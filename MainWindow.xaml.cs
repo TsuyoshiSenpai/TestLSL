@@ -88,7 +88,7 @@ namespace LSLImportCurves
             CheckIfSavingEnabled();
             if (SaveEnabled)
             {
-                SaveMultipleStreamsToTxt(AxisNames, Curves);
+                SaveMultipleStreamsToTxt(AxisNames, Curves, PathToSelectedFolder);
             }
         }
 
@@ -288,7 +288,7 @@ namespace LSLImportCurves
             else this.btSelectFolder.IsEnabled = false;
         }
 
-        public void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points)
+        public void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points, string path)
         {
             
         }
@@ -296,6 +296,6 @@ namespace LSLImportCurves
 
     public interface ISaveEEGStreamToFile
     {
-        void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points);
+        void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points, string pathToDestinationFolder);
     }
 }
