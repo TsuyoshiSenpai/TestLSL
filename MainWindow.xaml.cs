@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Linq;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +19,8 @@ using OxyPlot.Wpf;
 using LinearAxis = OxyPlot.Wpf.LinearAxis;
 using LineSeries = OxyPlot.Wpf.LineSeries;
 using VerticalAlignment = System.Windows.VerticalAlignment;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace LSLImportCurves
 {
@@ -39,7 +43,15 @@ namespace LSLImportCurves
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private bool saveEnabled;
         private List<string> axisNames = new List<string>();
+        private string currentStreamName;
 
+        public string CurrentStreamName
+        {
+            get { return currentStreamName; }
+            set { currentStreamName = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<StreamModel> Streams { get; set; }
 
         public List<string> AxisNames
         {
@@ -86,10 +98,6 @@ namespace LSLImportCurves
             InitializeComponent();
             FindStream();
             CheckIfSavingEnabled();
-            if (SaveEnabled)
-            {
-                SaveMultipleStreamsToTxt(AxisNames, Curves, PathToSelectedFolder);
-            }
         }
 
         /// <summary>
@@ -105,7 +113,10 @@ namespace LSLImportCurves
             CbItems.Add(cbItem);
 
             foreach (var stream in _allStreams)
+            {
                 CbItems.Add(new ComboBoxItem { Content = stream.name() });
+                CurrentStreamName = stream.name();
+            }
         }
 
         /// <summary>
@@ -249,6 +260,10 @@ namespace LSLImportCurves
             _timer.Stop();
             _timer.IsEnabled = false;
             _run = false;
+            if (SaveEnabled)
+            {
+                SaveStreamInfoToJson(AxisNames, Curves, PathToSelectedFolder, CurrentStreamName);
+            }
         }
 
         #region INotifyPropertyChanged
@@ -288,10 +303,97 @@ namespace LSLImportCurves
             else this.btSelectFolder.IsEnabled = false;
         }
 
-        public void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points, string path)
+        public void SaveStreamInfoToJson(List<string> axisLabels, List<DataPoint[]> points, string pathToFolder, string streamName)
         {
-            
+            string path = $"{pathToFolder}\\{streamName}.json";
+            // Streams.Add(new StreamModel() {StreamName = streamName, AxisLabel = "aaa", X = 0, Y = 0 });
+            object o = Streams;
+            if (path != null)
+            {
+                string dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir))
+                {
+                    _ = Directory.CreateDirectory(dir);
+                }
+
+                using (StreamWriter file = File.CreateText(path))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(file, o);
+                }
+            }
         }
+
+        public static bool IsValidJson(string stringValue)
+        {
+            if (File.Exists(stringValue))
+            {
+                var value = File.ReadAllText(stringValue).Trim();
+                if ((value.StartsWith("{") && value.EndsWith("}")) ||
+                    (value.StartsWith("[") && value.EndsWith("]")))
+                {
+                    try
+                    {
+                        JToken obj = JToken.Parse(value);
+                        return true;
+                    }
+                    catch (JsonReaderException)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+    }
+
+    public class StreamModel : INotifyPropertyChanged
+    {
+        private string streamName;
+
+        public string StreamName
+        {
+            get { return streamName; }
+            set { streamName = value; }
+        }
+
+        private string axisLabel;
+
+        public string AxisLabel
+        {
+            get { return axisLabel; }
+            set { axisLabel = value; OnPropertyChanged(); }
+        }
+
+        private double x;
+
+        public double X
+        {
+            get { return x; }
+            set { x = value; OnPropertyChanged(); }
+        }
+
+        private double y;
+
+        public double Y
+        {
+            get { return y; }
+            set { y = value; OnPropertyChanged(); }
+        }
+
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 
     public interface ISaveEEGStreamToFile
@@ -299,9 +401,9 @@ namespace LSLImportCurves
         /// <summary>
         /// Сохраняет графики с ЭЭГ в текстовый файл
         /// </summary>
-        /// <param name="streamNames">Названия потоков</param>
+        /// <param name="axisLabels">Названия потоков</param>
         /// <param name="points">Список точек графика</param>
         /// <param name="pathToDestinationFolder">Путь к папке, в которой будет сохранено</param>
-        void SaveMultipleStreamsToTxt(List<string> streamNames, List<DataPoint[]> points, string pathToDestinationFolder);
+        void SaveStreamInfoToJson(List<string> axisLabels, List<DataPoint[]> points, string pathToDestinationFolder, string streamName);
     }
 }
