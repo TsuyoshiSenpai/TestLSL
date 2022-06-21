@@ -31,8 +31,6 @@ namespace LSLImportCurves
     {
         private ObservableCollection<ComboBoxItem> _cbItems;
         private ComboBoxItem _selectedcbItem;
-        public FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-        public string PathToSelectedFolder;
         private const int BufferLen = 2000;
         private List<DataPoint[]> _curves;
         private List<Plot> _plots = new List<Plot>();
@@ -44,6 +42,12 @@ namespace LSLImportCurves
         private bool saveEnabled;
         private List<string> axisNames = new List<string>();
         private string currentStreamName;
+
+
+
+        public FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+
+        public string PathToSelectedFolder;
 
         public string CurrentStreamName
         {
@@ -281,6 +285,7 @@ namespace LSLImportCurves
         {
             folderBrowserDialog.ShowDialog();
             PathToSelectedFolder = folderBrowserDialog.SelectedPath;
+            PathIsSelected = true;
         }
 
         private void SaveBox_Checked(object sender, RoutedEventArgs e)
@@ -348,8 +353,6 @@ namespace LSLImportCurves
             }
             return false;
         }
-
-
     }
 
     public class StreamModel : INotifyPropertyChanged
