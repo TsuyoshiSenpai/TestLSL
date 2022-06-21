@@ -135,6 +135,7 @@ namespace LSLImportCurves
             _channelsCount = _inlet.info().channel_count();
             _plots = new List<Plot>();
             CurvesGrid.Children.Clear();
+            AxisNames = new List<string>();
             CurvesGrid.RowDefinitions.Clear();
             CurvesGrid.ColumnDefinitions.Clear();
             CurvesGrid.ColumnDefinitions.Add(new ColumnDefinition(){Width = GridLength.Auto});
@@ -146,7 +147,7 @@ namespace LSLImportCurves
                 var sp = new StackPanel() {Orientation = (System.Windows.Controls.Orientation)System.Windows.Forms.Orientation.Horizontal};
                 var sp2 = new StackPanel() {VerticalAlignment = VerticalAlignment.Center};
                 var label = new TextBlock() {Text = channels[i].Element("label").Value};
-                AxisNames.Add(label.ToString()); // заполняем массив с именами осей
+                AxisNames.Add(label.Text); // заполняем массив с именами осей
                 var type = new TextBlock() {Text = channels[i].Element("type").Value};
                 sp2.Children.Add(label);
                 sp2.Children.Add(type);
@@ -305,8 +306,9 @@ namespace LSLImportCurves
 
         public void SaveStreamInfoToJson(List<string> axisLabels, List<DataPoint[]> points, string pathToFolder, string streamName)
         {
-            string path = $"{pathToFolder}\\{streamName}.json";
-            // Streams.Add(new StreamModel() {StreamName = streamName, AxisLabel = "aaa", X = 0, Y = 0 });
+            string path = $"{pathToFolder}\\{streamName.Replace(':', '.')}.json";
+            Streams = new ObservableCollection<StreamModel>();
+            Streams.Add(new StreamModel() {StreamName = streamName, AxisLabels = axisLabels, Points = points });
             object o = Streams;
             if (path != null)
             {
@@ -360,28 +362,20 @@ namespace LSLImportCurves
             set { streamName = value; }
         }
 
-        private string axisLabel;
+        private List<string> axisLabels;
 
-        public string AxisLabel
+        public List<string> AxisLabels
         {
-            get { return axisLabel; }
-            set { axisLabel = value; OnPropertyChanged(); }
+            get { return axisLabels; }
+            set { axisLabels = value; OnPropertyChanged(); }
         }
 
-        private double x;
+        private List<DataPoint[]> points;
 
-        public double X
+        public List<DataPoint[]> Points
         {
-            get { return x; }
-            set { x = value; OnPropertyChanged(); }
-        }
-
-        private double y;
-
-        public double Y
-        {
-            get { return y; }
-            set { y = value; OnPropertyChanged(); }
+            get { return points; }
+            set { points = value; OnPropertyChanged(); }
         }
 
 
@@ -399,11 +393,12 @@ namespace LSLImportCurves
     public interface ISaveEEGStreamToFile
     {
         /// <summary>
-        /// Сохраняет графики с ЭЭГ в текстовый файл
+        /// Сохраняет графики с ЭЭГ в JSON файл
         /// </summary>
-        /// <param name="axisLabels">Названия потоков</param>
+        /// <param name="axisLabels">Названия осей</param>
         /// <param name="points">Список точек графика</param>
         /// <param name="pathToDestinationFolder">Путь к папке, в которой будет сохранено</param>
+        /// <param name="streamName">Название потока</param>
         void SaveStreamInfoToJson(List<string> axisLabels, List<DataPoint[]> points, string pathToDestinationFolder, string streamName);
     }
 }
