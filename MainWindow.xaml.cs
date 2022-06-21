@@ -285,7 +285,6 @@ namespace LSLImportCurves
         {
             folderBrowserDialog.ShowDialog();
             PathToSelectedFolder = folderBrowserDialog.SelectedPath;
-            PathIsSelected = true;
         }
 
         private void SaveBox_Checked(object sender, RoutedEventArgs e)
